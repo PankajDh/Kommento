@@ -1,0 +1,4 @@
+1. pass drawer navigation in main and then stack navigation in it 
+    https://stackoverflow.com/questions/63169267/expo-app-the-action-toggle-drawer-was-not-handled-by-any-navigator
+
+2. 
