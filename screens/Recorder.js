@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Platform, TextInput, View, StyleSheet, TouchableOpacity, ImageBackground, BackHandler } from 'react-native';
+import { Button, Platform, TextInput, View, StyleSheet, TouchableOpacity, ImageBackground, BackHandler, Text } from 'react-native';
 import RtcEngine, { ChannelProfile, ClientRole } from 'react-native-agora';
 import requestCameraAndAudioPermission from '../components/Permissions';
 import Constants from '../Constants';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMicrophoneAlt, faMicrophoneAltSlash, faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import CurrentMatch from '../components/CurrentMatch';
 
 export default class Recorder extends Component {
     constructor(props) {
@@ -18,7 +19,7 @@ export default class Recorder extends Component {
             unMute: true,
             joinSucceed: false,
             peerIds: [],
-            gameName: Constants.CHANNEL_NAME || props.route.params.gameName
+            gameName: Constants.GAME_NAME || props.route.params.gameName
         }
         if (Platform.OS === Constants.ANDROID) {
             requestCameraAndAudioPermission().then(() => {
@@ -31,6 +32,11 @@ export default class Recorder extends Component {
         this.init();
     }
 
+    // need to solve this in futrue versions
+    componentWillUnmount() {
+        this._leaveChannel();
+    }
+
     init = async () => {
         const { appId } = this.state
         this._engine = await RtcEngine.create(appId)
@@ -40,7 +46,10 @@ export default class Recorder extends Component {
         // Set the channel profile as live streaming.
         await this._engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
-        await this._setClientRole(ClientRole.Audience);
+        await this._setClientRole(ClientRole.Broadcaster);
+
+        // join the channel
+        await this._joinChannel();
 
         // Listen for the UserJoined callback.
         // This callback occurs when the remote user successfully joins the channel.
@@ -117,15 +126,16 @@ export default class Recorder extends Component {
         // })
         try {
             await this._engine?.enableLocalAudio(!openMicrophone);
-            await this._engine.enableAudio();
+            await this._engine?.muteLocalAudioStream(openMicrophone);
+            // await this._engine.enableAudio();
             await this.setState({ openMicrophone: !openMicrophone });
         } catch (err) {
             console.warn('enableLocalAudio', err);
         }
         console.log(`current openMicroPhone is ${!openMicrophone}`);
-        const role = !openMicrophone ? ClientRole.Broadcaster : ClientRole.Audience;
-        console.log(`setting role to ${role}`);
-        await this._setClientRole(role);
+        // const role = !openMicrophone ? ClientRole.Broadcaster : ClientRole.Audience;
+        // console.log(`setting role to ${role}`);
+        // await this._setClientRole(role);
     }
 
     // Switch the audio playback device.
@@ -139,8 +149,8 @@ export default class Recorder extends Component {
         try {
             // await this._engine?.setunMute(!unMute);
             console.log(`setting audio mute to ${unMute}`);
-            await this._engine?.muteAllRemoteAudioStreams(!unMute);
-            this.setState({ unMute: !unMute });
+            await this._engine?.muteAllRemoteAudioStreams(unMute);
+            await this.setState({ unMute: !unMute });
         } catch (err) {
             console.warn(err);
         }
@@ -158,39 +168,39 @@ export default class Recorder extends Component {
             // <ImageBackground source={require('../assets/footballBI.jpeg')} style={{ flex: 1, resizeMode: 'cover' }} >
             <View style={styles.container}>
                 <View style={styles.top}>
-                    <TextInput
+                    {/* <TextInput
                         style={styles.input}
                         onChangeText={(text) => this.setState({ channelName: text })}
                         placeholder={'Channel Name'}
                         value={gameName}
-                    />
-                    <Button
+                    /> */}
+                    <CurrentMatch />
+                    {/* <Button
                         onPress={joinSucceed ? this._leaveChannel : this._joinChannel}
                         title={`${joinSucceed ? 'Leave' : 'Join'} channel`}
-                    />
+                        style={styles.joinButton}
+                        color={'#F93C5B'}
+                    /> */}
                 </View>
                 <View style={styles.float}>
-                    {/* <Button
-                        onPress={this._switchMicrophone}
-                        title={`Microphone ${openMicrophone ? 'on' : 'off'}`}
-                    /> */}
-                    <TouchableOpacity onPress={this._switchMicrophone} style={{ padding: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        {
-                            openMicrophone ? <FontAwesomeIcon icon={faMicrophoneAlt} style={styles.recordingIcon} size={50} /> :
-                                <FontAwesomeIcon icon={faMicrophoneAltSlash} style={styles.recordingIcon} size={50} />
-                        }
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this._switchSpeakerphone} style={{ padding: 50, justifyContent: 'center', alignItems: 'center' }}>
-                        {
-                            unMute ? <FontAwesomeIcon icon={faPause} style={styles.recordingIcon} size={50} /> :
-                                <FontAwesomeIcon icon={faPlay} style={styles.recordingIcon} size={50} />
-                        }
-                    </TouchableOpacity>
-                    {/* <Button
-                        onPress={this._switchSpeakerphone}
-                        title={unMute ? 'Speakerphone' : 'Earpiece'}
-                        style={{ justifyContent: 'flex-end' }}
-                    /> */}
+                    <View style={styles.speakPlayButtons}>
+                        <TouchableOpacity onPress={this._switchMicrophone} style={{ padding: 10, justifyContent: 'center', alignItems: 'center' }}>
+                            {
+                                openMicrophone ? <FontAwesomeIcon icon={faMicrophoneAlt} style={styles.recordingIcon} size={70} /> :
+                                    <FontAwesomeIcon icon={faMicrophoneAltSlash} style={styles.recordingIcon} size={70} />
+                            }
+                        </TouchableOpacity>
+                        <Text style={{ fontWeight: 'bold' }}>Press to Speak/Mute</Text>
+                    </View>
+                    <View style={styles.speakPlayButtons}>
+                        <TouchableOpacity onPress={this._switchSpeakerphone} style={{ padding: 10, justifyContent: 'center', alignItems: 'center' }}>
+                            {
+                                unMute ? <FontAwesomeIcon icon={faPause} style={styles.recordingIcon} size={70} /> :
+                                    <FontAwesomeIcon icon={faPlay} style={styles.recordingIcon} size={70} />
+                            }
+                        </TouchableOpacity>
+                        <Text style={{ fontWeight: 'bold' }}>Press to Play/Pause</Text>
+                    </View>
                 </View>
             </View>
             // </ImageBackground>
@@ -201,28 +211,36 @@ export default class Recorder extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: 'white'
+        // flex: 1,
+        // backgroundColor: 'white'
     },
     float: {
         // position: 'absolute',
         // right: 0,
         // bottom: 0,
-        justifyContent: 'center',
-        alignContent: 'center',
-        flex: 2
+        // justifyContent: 'center',
+        // alignContent: 'center',
+        // flex: 2
     },
     top: {
-        width: '100%',
-        flex: 1
+        // width: '100%',
+        // flex: 1
     },
     input: {
-        borderColor: 'gray',
-        borderWidth: 1,
-        fontWeight: 'bold'
+        // borderColor: 'gray',
+        // borderWidth: 1,
+        // fontWeight: 'bold'
     },
     recordingIcon: {
-        color: 'red'
+        color: '#F93C5B'
+    },
+    speakPlayButtons: {
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        elevation: 10,
+        margin: 20
     }
 });
 

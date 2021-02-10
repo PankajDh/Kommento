@@ -1,4 +1,18 @@
 1. pass drawer navigation in main and then stack navigation in it 
     https://stackoverflow.com/questions/63169267/expo-app-the-action-toggle-drawer-was-not-handled-by-any-navigator
 
-2. 
+2. to generate the apk go the the android folder and run the command "./gradlew assembleRelease" and then go to 
+    cd ./android/app/build/outputs/apk/release to find the apk
+
+3. should run while the screen is off
+
+4. if you want to include round icons in future enable it in the AndroidManifest.xml file 
+    https://stackoverflow.com/a/34333915/14080722
+    android:roundIcon="@mipmap/ic_launcher_round add this at line number 10
+
+5. to change the project name go to 
+    android/app/src/main/res/values/string.xml
+    and app.json
+    https://stackoverflow.com/a/34798296/14080722
+
+6. 

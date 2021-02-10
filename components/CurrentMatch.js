@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 const CurrentMatch = () => {
     const teamOne = 'India';
-    const teamTwo = 'Australia';
+    const teamTwo = 'England';
 
     return (
         <View style={styles.currentMatch}>

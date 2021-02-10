@@ -1,14 +1,12 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import BarIcon from '../icons/BarIcon';
-import PlayerModal from '../modals/playerModal';
-import CommentariesByMatch from '../screens/CommentariesByMatch';
-import Home from '../screens/Home';
+import BroadcastNotAvailable from '../screens/BroadcastNotAvailable';
 import Recorder from '../screens/Recorder';
 
 const Stack = createStackNavigator();
 
-export default StackNavigatorHome = () => {
+export default StackNavigatorBroadcast = () => {
     return (
         <Stack.Navigator
             screenOptions={({ navigation }) => ({
@@ -26,9 +24,7 @@ export default StackNavigatorHome = () => {
                 headerLeft: () => (<BarIcon navigation={navigation} />)
             })}
         >
-            <Stack.Screen name='Kommento' component={Home} options={{ title: 'Kommento' }} />
-            <Stack.Screen name='Current Game' component={CommentariesByMatch} options={{ title: 'Current Game' }} />
-            <Stack.Screen name='Current Game Is' component={PlayerModal} options={{ title: 'Current Game' }} />
+            <Stack.Screen name='Broadcast Live' component={BroadcastNotAvailable} options={{ title: 'Broadcast Live' }} />
         </Stack.Navigator>
     );
 };
