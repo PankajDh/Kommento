@@ -3,42 +3,36 @@ import {
   Modal,
   View,
   Text,
-  Dimensions,
   StyleSheet,
   TouchableOpacity,
-  Alert,
+  Dimensions,
 } from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faTimes,
-  faPlayCircle,
-  faPauseCircle,
-  faForward,
-  faBackward,
-  faCircle,
-} from '@fortawesome/free-solid-svg-icons';
 import RtcEngine, {ChannelProfile, ClientRole} from 'react-native-agora';
 import Constants from '../Constants';
 import userJoined from '../common-functions/UserJoined';
+import KeepAwake from 'react-native-keep-awake';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faMicrophoneAlt,
+  faMicrophoneAltSlash,
+  faPlay,
+  faPause,
+  faTimes,
+  faCircle,
+} from '@fortawesome/free-solid-svg-icons';
 
-const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
-  console.log('inside the player modal');
+const RecordingModal = ({
+  visible,
+  setSelectedItem,
+  match,
+  commentaryDetails,
+}) => {
+  const {matchName} = match;
+
   const [mute, setMute] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
-  const {matchName} = match;
-
-  const getToken = async (item) => {
-    const url = `${Constants.BACKEND_BASEURL}/app-auth/token?channelName=${item.channelName}&userId=${global.userId}`;
-    try {
-      let response = await fetch(url);
-      response = await response.json();
-      return response.token;
-    } catch (err) {
-      console.log(err);
-      Alert.alert('there seems to be some issue, please restart the app');
-    }
-  };
+  const [openMicrophone, setOpenMicrophone] = useState(false);
 
   const init = async (item) => {
     if (!global.engine) {
@@ -49,15 +43,15 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     // Set the channel profile as live streaming.
     await global.engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
-    await global.engine.setClientRole(ClientRole.Audience);
-
-    const token = await getToken(item);
+    await global.engine.setClientRole(ClientRole.Broadcaster);
+    // join the channel
+    // const token = await getToken(item);
     try {
       await engine?.joinChannel(
-        // '00606b6c41aaad74e66ae944240858be524IAD6U60wwrLVzIKDrEVUPyxeC19IEkXXlQi6hWgzbbG6xKusgGwAAAAAEAAeXT+cuktnYAEAAQC6S2dg',
-        token,
-        item.channelName,
-        // 'testingComments',
+        '00606b6c41aaad74e66ae944240858be524IAD6U60wwrLVzIKDrEVUPyxeC19IEkXXlQi6hWgzbbG6xKusgGwAAAAAEAAeXT+cuktnYAEAAQC6S2dg',
+        // token,
+        // item.channelName,
+        'testingComments',
         null,
         parseInt(global.userId),
       );
@@ -119,8 +113,19 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     setMute(!mute);
   };
 
+  // Turn the microphone on or off.
+  const switchMicrophone = async () => {
+    await global.engine.enableLocalAudio(!openMicrophone);
+    await global.engine.muteLocalAudioStream(openMicrophone);
+    // await this._engine.enableAudio();
+    setOpenMicrophone(!openMicrophone);
+
+    console.log(`current openMicroPhone is ${!openMicrophone}`);
+  };
+
   const onModalClose = async () => {
     await leaveChannel();
+    KeepAwake.deactivate();
     setSelectedItem({});
   };
 
@@ -176,29 +181,47 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
             flexDirection: 'row',
             marginTop: 10,
             alignItems: 'center',
+            justifyContent: 'space-evenly',
           }}>
-          <TouchableOpacity>
-            <FontAwesomeIcon
-              icon={faBackward}
-              color="#e83b61"
-              size={35}
-              style={{marginRight: 15}}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => muteUnmutePress()}>
-            {mute ? (
-              <FontAwesomeIcon icon={faPlayCircle} color="#e83b61" size={55} />
+          <TouchableOpacity onPress={switchMicrophone}>
+            {openMicrophone ? (
+              <FontAwesomeIcon
+                icon={faMicrophoneAlt}
+                style={styles.recordingIcon}
+                color="#e83b61"
+                size={50}
+              />
             ) : (
-              <FontAwesomeIcon icon={faPauseCircle} color="#e83b61" size={55} />
+              <FontAwesomeIcon
+                icon={faMicrophoneAltSlash}
+                style={styles.recordingIcon}
+                size={50}
+                color="#e83b61"
+              />
             )}
           </TouchableOpacity>
-          <TouchableOpacity>
-            <FontAwesomeIcon
-              icon={faForward}
-              color="#e83b61"
-              size={35}
-              style={{marginLeft: 15}}
-            />
+          <TouchableOpacity
+            onPress={muteUnmutePress}
+            style={{
+              padding: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            {mute ? (
+              <FontAwesomeIcon
+                icon={faPlay}
+                style={styles.recordingIcon}
+                size={50}
+                color="#e83b61"
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faPause}
+                style={styles.recordingIcon}
+                size={50}
+                color="#e83b61"
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -214,5 +237,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 20,
   },
+  recordingIcon: {},
 });
-export default PlayerModal;
+
+export default RecordingModal;

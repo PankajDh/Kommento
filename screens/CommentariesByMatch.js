@@ -1,25 +1,29 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import CurrentMatch from '../components/CurrentMatch';
-import CurrentMatchesList from '../components/CurrentMatchesList';
+import CommentaryPush from '../components/CommentaryPush';
+import CurrentCommentriesList from '../components/CurrentCommentriesList';
 
-const CommentariesByMatch = ({ navigation }) => {
-    return (
-        <View style={styles.main}>
-            <CurrentMatch />
-            <View style={{ paddingTop: 10 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Commentaries</Text>
-                <CurrentMatchesList matchName='India Vs England, First Test Chennai' navigation={navigation} />
-            </View>
-        </View>
-    );
+const CommentariesByMatch = ({navigation, route}) => {
+  const {match} = route.params;
+
+  return (
+    <View style={styles.main}>
+      {!global.isCommentator ? <CommentaryPush /> : null}
+      <CurrentMatch match={match} />
+      <View style={{paddingTop: 10}}>
+        <Text style={{fontWeight: 'bold', fontSize: 15}}>Commentaries</Text>
+        <CurrentCommentriesList match={match} navigation={navigation} />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    main: {
-        padding: 20,
-        backgroundColor: '#FBFCFC'
-    },
+  main: {
+    padding: 10,
+    backgroundColor: '#FBFCFC',
+  },
 });
 
 export default CommentariesByMatch;

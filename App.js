@@ -2,13 +2,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import 'react-native-gesture-handler';
 import DrawerNavigator from './navigation/DrawerNavigator';
+import StackNavigatorLogin from './navigation/StackNavigatorLogin';
 
 const App = () => {
   return (
     <NavigationContainer>
-      <DrawerNavigator />
+      <StackNavigatorLogin />
     </NavigationContainer>
   );
+  // return(
+  //   <SendSms />
+  // )
 };
 
 

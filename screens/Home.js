@@ -1,68 +1,71 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import CurrentMatch from '../components/CurrentMatch.js';
+import CurrentMatchLoader from '../components/CurrentMatchLoader';
 import ListenBySports from '../components/ListenBySports';
+import Constants from '../Constants';
+import CommentaryPush from '../components/CommentaryPush';
 
-const Home = ({ navigation }) => {
+const Home = ({navigation, route}) => {
+  const [liveMatches, setLiveMatches] = useState([]);
 
-    return (
-        <View>
-            <TouchableOpacity onPress={() => navigation.navigate('Current Game')}>
-                <View style={styles.main}>
-                    <View >
-                        <Text style={styles.headingText}>
-                            Featured Matches
-                    </Text>
-                    </View>
-                    <CurrentMatch />
-                </View>
-            </TouchableOpacity>
-            <View style={{ paddingHorizontal: 20, paddingTop: 30 }}>
-                <View >
-                    <Text style={styles.headingText}>
-                        Listen By Sports
-                    </Text>
-                </View>
-                <ListenBySports />
-            </View>
+  const getCurentMatches = async () => {
+    const url = `${Constants.BACKEND_BASEURL}/matches/live`;
+    try {
+      let response = await fetch(url);
+      response = await response.json();
+      setLiveMatches(response);
+    } catch (err) {
+      console.log(err);
+      Alert.alert('there seems to be some issue, please restart the app');
+    }
+  };
+
+  useEffect(() => {
+    getCurentMatches();
+  }, []);
+
+  return (
+    <View>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('CommentariesByMatch', {
+            match: liveMatches[0],
+          })
+        }>
+        <View style={styles.main}>
+          <View style={{paddingTop: 10}}>
+            {!global.isCommentator ? <CommentaryPush /> : null}
+          </View>
+          <View>
+            <Text style={styles.headingText}>Featured Matches</Text>
+          </View>
+          {liveMatches?.length > 0 ? (
+            <CurrentMatch match={liveMatches[0]} />
+          ) : (
+            <CurrentMatchLoader />
+          )}
         </View>
-    );
+      </TouchableOpacity>
+      <View style={{paddingHorizontal: 10, paddingTop: 15}}>
+        <View>
+          <Text style={styles.headingText}>Listen By Sports</Text>
+        </View>
+        <ListenBySports />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    main: {
-        paddingHorizontal: 20,
-        backgroundColor: '#FBFCFC'
-    },
-    headingText: {
-        fontWeight: 'bold',
-        fontSize: 20
-    },
-    currentMatch: {
-        // paddingTop: 10,
-        borderRadius: 5,
-        // borderWidth: 2,
-        // borderColor: 'grey',
-        backgroundColor: 'white',
-        elevation: 10
-    },
-    liveDot: {
-        paddingVertical: 10
-    },
-    liveText: {
-        fontSize: 20,
-        marginLeft: 10,
-        fontWeight: 'bold'
-    },
-    teamLogo: {
-        borderRadius: 50,
-        width: 100,
-        height: 100
-    },
-    teamText: {
-        fontWeight: 'bold',
-        fontSize: 15
-    }
+  main: {
+    paddingHorizontal: 10,
+    backgroundColor: '#FBFCFC',
+  },
+  headingText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
 });
 
 export default Home;
