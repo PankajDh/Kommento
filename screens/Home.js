@@ -5,6 +5,7 @@ import CurrentMatchLoader from '../components/CurrentMatchLoader';
 import ListenBySports from '../components/ListenBySports';
 import Constants from '../Constants';
 import CommentaryPush from '../components/CommentaryPush';
+import Highlights from '../components/Highlights.js';
 
 const Home = ({navigation, route}) => {
   const [liveMatches, setLiveMatches] = useState([]);
@@ -47,6 +48,12 @@ const Home = ({navigation, route}) => {
           )}
         </View>
       </TouchableOpacity>
+      <View style={{paddingHorizontal: 10, paddingTop: 15}}>
+        <View>
+          <Text style={styles.headingText}>Highlights</Text>
+        </View>
+        <Highlights />
+      </View>
       <View style={{paddingHorizontal: 10, paddingTop: 15}}>
         <View>
           <Text style={styles.headingText}>Listen By Sports</Text>

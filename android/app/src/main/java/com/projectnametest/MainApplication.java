@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+// import com.zmxv.RNSound.RNSoundPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactInstanceManager;
