@@ -37,30 +37,30 @@ const VerifyCode = ({navigation, route}) => {
     )}&countryCode=${encodeURIComponent(countryCode)}&code=${encodeURIComponent(
       value,
     )}`;
-    // let response = await fetch(url);
-    // response = await response.json();
-    // // console.log(`response is ${JSON.stringify(response)}`);
-    // const {verified, userId, isCommentator} = response;
-    // if (verified) {
-    //   global.userId = userId;
-    //   global.isCommentator = isCommentator;
-    //   navigation.reset({
-    //     index: 0,
-    //     routes: [{name: 'Drawer'}],
-    //   });
-    // } else {
-    //   Alert.alert('', 'Code is incorrect');
-    // }
-    global.userId = '1';
-    global.isCommentator = false;
-    navigation.reset({
-      index: 0,
-      routes: [
-        {
-          name: 'Drawer',
-        },
-      ],
-    });
+    let response = await fetch(url);
+    response = await response.json();
+    // console.log(`response is ${JSON.stringify(response)}`);
+    const {verified, userId, isCommentator} = response;
+    if (verified) {
+      global.userId = userId;
+      global.isCommentator = isCommentator;
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Drawer'}],
+      });
+    } else {
+      Alert.alert('', 'Code is incorrect');
+    }
+    // global.userId = '1';
+    // global.isCommentator = false;
+    // navigation.reset({
+    //   index: 0,
+    //   routes: [
+    //     {
+    //       name: 'Drawer',
+    //     },
+    //   ],
+    // });
     setLoader(false);
     setDisableButton(false);
   };
