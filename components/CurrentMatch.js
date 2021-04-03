@@ -16,6 +16,7 @@ const CurrentMatch = ({match}) => {
     teamTwoRuns,
     teamTwoWickets,
   } = match;
+
   return (
     <View style={styles.currentMatch}>
       <View
@@ -50,17 +51,15 @@ const CurrentMatch = ({match}) => {
         }}>
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
           <View style={{alignItems: 'center'}}>
-            <Image
-              source={require('../assets/india.png')}
-              style={styles.teamLogo}
-            />
+            <Image source={{uri: teamOne.flagUrl}} style={styles.teamLogo} />
             <Text style={styles.teamText}>{teamOne.name}</Text>
           </View>
           <View style={{alignItems: 'center', paddingLeft: 10}}>
             <Text style={{fontWeight: 'bold', fontSize: 15}}>
-              {teamOneRuns}/{teamOneWickets}
+              {teamOneRuns ? teamOneRuns : '0'}/
+              {teamOneWickets ? teamOneWickets : '0'}
             </Text>
-            <Text>{teamOneOvers} Overs</Text>
+            <Text>{teamOneOvers ? teamOneOvers : '0.0'} Overs</Text>
           </View>
         </View>
         <View style={{justifyContent: 'center'}}>
@@ -69,15 +68,13 @@ const CurrentMatch = ({match}) => {
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={{alignItems: 'center', paddingRight: 10}}>
             <Text style={{fontWeight: 'bold', fontSize: 15}}>
-              {teamTwoRuns}/{teamTwoWickets}
+              {teamTwoRuns ? teamTwoRuns : '0'}/
+              {teamTwoWickets ? teamTwoWickets : '0'}
             </Text>
-            <Text>{teamTwoOvers} Overs</Text>
+            <Text>{teamTwoOvers ? teamTwoOver : '0.0'} Overs</Text>
           </View>
           <View style={{alignItems: 'center'}}>
-            <Image
-              source={require('../assets/aus.png')}
-              style={styles.teamLogo}
-            />
+            <Image source={{uri: teamTwo.flagUrl}} style={styles.teamLogo} />
             <Text style={styles.teamText}>{teamTwo.name}</Text>
           </View>
         </View>
@@ -108,6 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: 60,
     height: 60,
+    resizeMode: 'contain',
   },
   teamText: {
     paddingTop: 10,

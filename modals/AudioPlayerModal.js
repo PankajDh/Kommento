@@ -38,6 +38,7 @@ const AudioPlayerModal = ({visible, setSelectedItem, match}) => {
       url: match.highlightsLink,
       title: matchName,
       artist: 'Track Artist',
+      artwork: require('../assets/ind-vs-eng.jpeg'),
     });
     TrackPlayer.play();
   };
@@ -103,6 +104,7 @@ const AudioPlayerModal = ({visible, setSelectedItem, match}) => {
           minimumTrackTintColor="#e83b61"
           maximumTrackTintColor="#000000"
           thumbTintColor="#e83b61"
+          trackImage={require('../assets/ind-vs-eng.jpeg')}
           onSlidingStart={slidingStarted}
           onSlidingComplete={slidingCompleted}
         />
