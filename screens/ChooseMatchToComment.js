@@ -7,15 +7,15 @@ import CurrentMatchLoader from '../components/CurrentMatchLoader';
 import CurrentCommentriesListCommentator from '../components/CurrentCommentriesListCommentator';
 
 const ChooseMatchToComment = ({navigation}) => {
-  const [liveMatches, setLiveMatches] = useState([]);
+  const [featuredMatches, setFeaturedMatches] = useState([]);
   // const [selectedItem, setSelectedItem] = useState({});
 
   const getCurrentMatches = async () => {
-    const url = `${Constants.BACKEND_BASEURL}/matches/live`;
+    const url = `${Constants.BACKEND_BASEURL}/matches/featured`;
     try {
       let response = await fetch(url);
       response = await response.json();
-      setLiveMatches(response);
+      setFeaturedMatches(response);
     } catch (err) {
       console.log(err);
       Alert.alert('there seems to be some issue, please restart the app');
@@ -28,17 +28,17 @@ const ChooseMatchToComment = ({navigation}) => {
 
   const handlePress = ({item}) => {
     // console.log(`item is ${JSON.stringify(item)}`);
-    // navigation.navigate('Recorder', {match: liveMatches[0]});
+    // navigation.navigate('Recorder', {match: featuredMatches[0]});
   };
 
   return (
     <View style={{padding: 10}}>
-      {liveMatches?.length > 0 ? (
+      {featuredMatches?.length > 0 ? (
         <View>
-          <CurrentMatch match={liveMatches[0]} />
+          <CurrentMatch match={featuredMatches[0]} />
           <View style={{paddingTop: 10}}>
             <Text style={{fontWeight: 'bold', fontSize: 15}}>Commentaries</Text>
-            <CurrentCommentriesListCommentator match={liveMatches[0]} />
+            <CurrentCommentriesListCommentator match={featuredMatches[0]} />
           </View>
         </View>
       ) : (

@@ -27,7 +27,7 @@ const CommentaryPush = () => {
             backgroundColor: 'white',
             borderRadius: 50,
             height: 70,
-            transform: [{rotate: '-45deg'}],
+            // transform: [{rotate: '-45deg'}],
           }}>
           <FontAwesomeIcon icon={faMicrophoneAlt} size={60} faRotate={90} />
         </View>

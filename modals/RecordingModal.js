@@ -27,6 +27,7 @@ const RecordingModal = ({
   match,
   commentaryDetails,
 }) => {
+  // console.log('inside recording modal');
   const {matchName} = match;
 
   const [mute, setMute] = useState(false);
@@ -34,8 +35,21 @@ const RecordingModal = ({
   const [peerIds, setPeerIds] = useState([]);
   const [openMicrophone, setOpenMicrophone] = useState(false);
 
+  const getToken = async (item) => {
+    const url = `${Constants.BACKEND_BASEURL}/app-auth/token?channelName=${item.channelName}&userId=${global.userId}`;
+    try {
+      let response = await fetch(url);
+      response = await response.json();
+      return response.token;
+    } catch (err) {
+      // console.log(err);
+      Alert.alert('there seems to be some issue, please restart the app');
+    }
+  };
+
   const init = async (item) => {
     if (!global.engine) {
+      // console.log('finding engine');
       global.engine = await RtcEngine.create(Constants.APP_ID);
     }
     // Enable the audio module.
@@ -45,24 +59,19 @@ const RecordingModal = ({
 
     await global.engine.setClientRole(ClientRole.Broadcaster);
     // join the channel
-    // const token = await getToken(item);
-    try {
-      await engine?.joinChannel(
-        '00606b6c41aaad74e66ae944240858be524IAD6U60wwrLVzIKDrEVUPyxeC19IEkXXlQi6hWgzbbG6xKusgGwAAAAAEAAeXT+cuktnYAEAAQC6S2dg',
-        // token,
-        // item.channelName,
-        'testingComments',
-        null,
-        parseInt(global.userId),
-      );
-    } catch (err) {
-      console.log(`err is ${JSON.stringify(err, null, 2)}`);
-    }
+    const token = await getToken(item);
+
+    await engine?.joinChannel(
+      token,
+      item.channelName,
+      null,
+      parseInt(global.userId),
+    );
 
     // Listen for the UserJoined callback.
     // This callback occurs when the remote user successfully joins the channel.
     global.engine.addListener('UserJoined', (uid, elapsed) => {
-      console.log('UserJoined', uid, elapsed);
+      // console.log('UserJoined', uid, elapsed);
       if (!peerIds.includes(uid)) {
         setPeerIds([...peerIds, uid]);
       }
@@ -71,14 +80,14 @@ const RecordingModal = ({
     // Listen for the UserOffline callback.
     // This callback occurs when the remote user leaves the channel or drops offline.
     global.engine.addListener('UserOffline', (uid, reason) => {
-      console.log('UserOffline', uid, reason);
+      // console.log('UserOffline', uid, reason);
       setPeerIds(peerIds.filter((id) => id !== uid));
     });
 
     // Listen for the JoinChannelSuccess callback.
     // This callback occurs when the local user successfully joins the channel.
     global.engine.addListener('JoinChannelSuccess', (channel, uid, elapsed) => {
-      console.log('JoinChannelSuccess', channel, uid, elapsed);
+      // console.log('JoinChannelSuccess', channel, uid, elapsed);
       setJoinSucceed(true);
       userJoined(match.id, 'LIVE');
     });
@@ -86,7 +95,7 @@ const RecordingModal = ({
     global.engine.addListener(
       'RejoinChannelSuccess',
       (channel, uid, elapsed) => {
-        console.log('RejoinChannelSuccess', channel, uid, elapsed);
+        // console.log('RejoinChannelSuccess', channel, uid, elapsed);
         setJoinSucceed(true);
         userJoined(match.id, 'LIVE');
       },
@@ -104,7 +113,7 @@ const RecordingModal = ({
     setPeerIds([]);
     setJoinSucceed(false);
     userJoined(match.id, 'LEFT');
-    console.log('left channel');
+    // console.log('left channel');
   };
 
   const muteUnmutePress = async () => {
@@ -120,13 +129,13 @@ const RecordingModal = ({
     // await this._engine.enableAudio();
     setOpenMicrophone(!openMicrophone);
 
-    console.log(`current openMicroPhone is ${!openMicrophone}`);
+    // console.log(`current openMicroPhone is ${!openMicrophone}`);
   };
 
   const onModalClose = async () => {
+    setSelectedItem({});
     await leaveChannel();
     KeepAwake.deactivate();
-    setSelectedItem({});
   };
 
   useEffect(() => {

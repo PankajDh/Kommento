@@ -25,7 +25,6 @@ const Login = ({navigation}) => {
     setDisableButton(true);
     const url = `${Constants.BACKEND_BASEURL}/users/login`;
     try {
-      console.log(`url is ${url}`);
       let response = await fetch(url, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -38,24 +37,24 @@ const Login = ({navigation}) => {
         },
       });
       response = await response.json();
-      console.log(`response is ${JSON.stringify(response, null, 2)}`);
       if (response.newUser) {
         Alert.alert(
           '',
           'There is no user with this phone number, please signup first',
         );
         navigation.navigate('SendSms', {phoneNumber, countryCode});
-      }
-      const {verified, userId, isCommentator} = response;
-      if (verified) {
-        global.userId = userId;
-        global.isCommentator = isCommentator;
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Drawer'}],
-        });
       } else {
-        Alert.alert('', 'Code is incorrect');
+        const {verified, userId, isCommentator} = response;
+        if (verified) {
+          global.userId = userId;
+          global.isCommentator = isCommentator;
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Drawer'}],
+          });
+        } else {
+          Alert.alert('', 'Code is incorrect');
+        }
       }
     } catch (err) {
       Alert.alert('', 'Country Code or Phone Number is incorrect');

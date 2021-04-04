@@ -43,7 +43,7 @@ export default class Recorder extends Component {
       Constants.APP_TYPE === 'Commentary'
     ) {
       requestCameraAndAudioPermission().then(() => {
-        console.log('requested!');
+        // console.log('requested!');
       });
     }
     KeepAwake.activate();

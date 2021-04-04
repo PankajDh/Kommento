@@ -40,7 +40,7 @@ const CurrentCommentriesListCommentator = ({match, navigation}) => {
     Constants.APP_TYPE === 'Commentary'
   ) {
     requestCameraAndAudioPermission().then(() => {
-      console.log('requested!');
+      // console.log('requested!');
     });
   }
 

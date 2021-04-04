@@ -8,14 +8,14 @@ import CommentaryPush from '../components/CommentaryPush';
 import Highlights from '../components/Highlights.js';
 
 const Home = ({navigation, route}) => {
-  const [liveMatches, setLiveMatches] = useState([]);
+  const [featuredMatches, setFeaturedMatches] = useState([]);
 
   const getCurentMatches = async () => {
-    const url = `${Constants.BACKEND_BASEURL}/matches/live`;
+    const url = `${Constants.BACKEND_BASEURL}/matches/featured`;
     try {
       let response = await fetch(url);
       response = await response.json();
-      setLiveMatches(response);
+      setFeaturedMatches(response);
     } catch (err) {
       console.log(err);
       Alert.alert('there seems to be some issue, please restart the app');
@@ -28,21 +28,21 @@ const Home = ({navigation, route}) => {
 
   return (
     <View>
+      <View style={{padding: 10}}>
+        {!global.isCommentator ? <CommentaryPush /> : null}
+      </View>
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('CommentariesByMatch', {
-            match: liveMatches[0],
+            match: featuredMatches[0],
           })
         }>
         <View style={styles.main}>
-          <View style={{paddingTop: 10}}>
-            {!global.isCommentator ? <CommentaryPush /> : null}
-          </View>
           <View>
             <Text style={styles.headingText}>Featured Matches</Text>
           </View>
-          {liveMatches?.length > 0 ? (
-            <CurrentMatch match={liveMatches[0]} />
+          {featuredMatches?.length > 0 ? (
+            <CurrentMatch match={featuredMatches[0]} />
           ) : (
             <CurrentMatchLoader />
           )}

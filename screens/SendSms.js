@@ -30,7 +30,7 @@ const SendSms = ({navigation, givenPhoneNumber, givenCountryCode}) => {
       phoneNumber,
     )}&countryCode=${encodeURIComponent(countryCode)}`;
     try {
-      // const response = await fetch(url);
+      const response = await fetch(url);
       navigation.navigate('VerifyCode', {phoneNumber, countryCode});
     } catch (err) {
       Alert.alert('', 'Country Code or Phone Number is incorrect');

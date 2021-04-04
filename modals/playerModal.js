@@ -22,7 +22,7 @@ import Constants from '../Constants';
 import userJoined from '../common-functions/UserJoined';
 
 const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
-  console.log('inside the player modal');
+  // console.log('inside the player modal');
   const [mute, setMute] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
@@ -35,7 +35,7 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
       response = await response.json();
       return response.token;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       Alert.alert('there seems to be some issue, please restart the app');
     }
   };
@@ -52,23 +52,18 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     await global.engine.setClientRole(ClientRole.Audience);
 
     const token = await getToken(item);
-    try {
-      await engine?.joinChannel(
-        // '00606b6c41aaad74e66ae944240858be524IAD6U60wwrLVzIKDrEVUPyxeC19IEkXXlQi6hWgzbbG6xKusgGwAAAAAEAAeXT+cuktnYAEAAQC6S2dg',
-        token,
-        item.channelName,
-        // 'testingComments',
-        null,
-        parseInt(global.userId),
-      );
-    } catch (err) {
-      console.log(`err is ${JSON.stringify(err, null, 2)}`);
-    }
+
+    await engine?.joinChannel(
+      token,
+      item.channelName,
+      null,
+      parseInt(global.userId),
+    );
 
     // Listen for the UserJoined callback.
     // This callback occurs when the remote user successfully joins the channel.
     global.engine.addListener('UserJoined', (uid, elapsed) => {
-      console.log('UserJoined', uid, elapsed);
+      // console.log('UserJoined', uid, elapsed);
       if (!peerIds.includes(uid)) {
         setPeerIds([...peerIds, uid]);
       }
@@ -77,14 +72,14 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     // Listen for the UserOffline callback.
     // This callback occurs when the remote user leaves the channel or drops offline.
     global.engine.addListener('UserOffline', (uid, reason) => {
-      console.log('UserOffline', uid, reason);
+      // console.log('UserOffline', uid, reason);
       setPeerIds(peerIds.filter((id) => id !== uid));
     });
 
     // Listen for the JoinChannelSuccess callback.
     // This callback occurs when the local user successfully joins the channel.
     global.engine.addListener('JoinChannelSuccess', (channel, uid, elapsed) => {
-      console.log('JoinChannelSuccess', channel, uid, elapsed);
+      // console.log('JoinChannelSuccess', channel, uid, elapsed);
       setJoinSucceed(true);
       userJoined(match.id, 'LIVE');
     });
@@ -92,7 +87,7 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     global.engine.addListener(
       'RejoinChannelSuccess',
       (channel, uid, elapsed) => {
-        console.log('RejoinChannelSuccess', channel, uid, elapsed);
+        // console.log('RejoinChannelSuccess', channel, uid, elapsed);
         setJoinSucceed(true);
         userJoined(match.id, 'LIVE');
       },
@@ -110,7 +105,7 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     setPeerIds([]);
     setJoinSucceed(false);
     userJoined(match.id, 'LEFT');
-    console.log('left channel');
+    // console.log('left channel');
   };
 
   const muteUnmutePress = async () => {
@@ -120,8 +115,8 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
   };
 
   const onModalClose = async () => {
-    await leaveChannel();
     setSelectedItem({});
+    await leaveChannel();
   };
 
   useEffect(() => {
@@ -151,9 +146,9 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
                 <FontAwesomeIcon icon={faCircle} color="#36F910" />
                 <Text style={{marginLeft: 3}}>Connected</Text>
               </View>
-              <Text style={{paddingLeft: 5}}>
+              {/* <Text style={{paddingLeft: 5}}>
                 {(peerIds.length || 0) + 1} Listnening
-              </Text>
+              </Text> */}
             </View>
           ) : (
             <View style={{flexDirection: 'row', alignItems: 'center'}}>

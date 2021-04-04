@@ -15,7 +15,9 @@ const CurrentMatch = ({match}) => {
     teamTwoOvers,
     teamTwoRuns,
     teamTwoWickets,
+    matchDate,
   } = match;
+  const matchDateInJs = new Date(matchDate);
 
   return (
     <View style={styles.currentMatch}>
@@ -39,7 +41,13 @@ const CurrentMatch = ({match}) => {
         {type === 'LIVE' ? (
           <Text style={styles.liveText}>Live</Text>
         ) : (
-          <Text style={styles.liveText}>Not Live</Text>
+          <View>
+            <Text style={styles.liveText}>
+              Live on {matchDateInJs.getDate()}{' '}
+              {Constants.MONTH_NAMES[matchDateInJs.getMonth()]}{' '}
+              {matchDateInJs.getFullYear()}
+            </Text>
+          </View>
         )}
       </View>
       <View

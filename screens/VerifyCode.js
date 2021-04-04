@@ -37,30 +37,21 @@ const VerifyCode = ({navigation, route}) => {
     )}&countryCode=${encodeURIComponent(countryCode)}&code=${encodeURIComponent(
       value,
     )}`;
-    // let response = await fetch(url);
-    // response = await response.json();
-    // const {verified, userId, isCommentator} = response;
-    // if (verified) {
-    //   global.userId = userId;
-    //   global.isCommentator = isCommentator;
-    //   navigation.reset({
-    //     index: 0,
-    //     routes: [{name: 'Drawer'}],
-    //   });
-    // } else {
-    //   Alert.alert('', 'Code is incorrect');
-    // }
-    global.userId = '1';
-    global.isCommentator = false;
-    navigation.navigate('CreatePin', {phoneNumber});
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [
-    //     {
-    //       name: 'Drawer',
-    //     },
-    //   ],
-    // });
+    let response = await fetch(url);
+    response = await response.json();
+    const {verified, userId, isCommentator} = response;
+    // console.log(`response is ${JSON.stringify(response)}`);
+    if (verified) {
+      global.userId = userId;
+      global.isCommentator = isCommentator;
+      navigation.navigate('CreatePin', {phoneNumber});
+    } else {
+      Alert.alert('', 'Code is incorrect');
+    }
+    // global.userId = '1';
+    // global.isCommentator = true;
+    // navigation.navigate('CreatePin', {phoneNumber});
+
     setLoader(false);
     setDisableButton(false);
   };
