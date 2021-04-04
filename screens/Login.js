@@ -8,30 +8,55 @@ import {
   Alert,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import Constants from '../Constants';
 
-const SendSms = ({navigation, givenPhoneNumber, givenCountryCode}) => {
+const Login = ({navigation}) => {
   const COUNTRY_CODE_LIST = ['+91', '+1'];
-  const [phoneNumber, setPhoneNumber] = useState(givenPhoneNumber || '');
-  const [countryCode, setCountryCode] = useState(givenCountryCode || '+91');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('+91');
+  const [code, setCode] = useState('');
   const [loader, setLoader] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
 
-  // const onSelect = (country) => {
-  //     setCountryCode(country.cca2);
-  // }
-  const sendVerificationCode = async () => {
+  const loginUser = async () => {
     setLoader(true);
     setDisableButton(true);
-    const url = `${
-      Constants.BACKEND_BASEURL
-    }/verification/send-sms?phoneNumber=${encodeURIComponent(
-      phoneNumber,
-    )}&countryCode=${encodeURIComponent(countryCode)}`;
+    const url = `${Constants.BACKEND_BASEURL}/users/login`;
     try {
-      const response = await fetch(url);
-      navigation.navigate('VerifyCode', {phoneNumber, countryCode});
+      console.log(`url is ${url}`);
+      let response = await fetch(url, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          phoneNumber,
+          code,
+          countryCode,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      response = await response.json();
+      console.log(`response is ${JSON.stringify(response, null, 2)}`);
+      if (response.newUser) {
+        Alert.alert(
+          '',
+          'There is no user with this phone number, please signup first',
+        );
+        navigation.navigate('SendSms', {phoneNumber, countryCode});
+      }
+      const {verified, userId, isCommentator} = response;
+      if (verified) {
+        global.userId = userId;
+        global.isCommentator = isCommentator;
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Drawer'}],
+        });
+      } else {
+        Alert.alert('', 'Code is incorrect');
+      }
     } catch (err) {
       Alert.alert('', 'Country Code or Phone Number is incorrect');
     }
@@ -50,7 +75,7 @@ const SendSms = ({navigation, givenPhoneNumber, givenCountryCode}) => {
       </View>
       <View
         style={{justifyContent: 'center', alignItems: 'center', marginTop: 60}}>
-        <Text>Enter your Phone Number</Text>
+        {/* <Text>Enter your Phone Number</Text> */}
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TextInput
             onChangeText={setCountryCode}
@@ -66,16 +91,35 @@ const SendSms = ({navigation, givenPhoneNumber, givenCountryCode}) => {
             clearButtonMode="always"
             keyboardType="phone-pad"
             textAlign="center"
+            placeholder="Phone Number"
+          />
+        </View>
+        <View>
+          <TextInput
+            onChangeText={setCode}
+            value={code}
+            style={styles.inputBox}
+            clearButtonMode="always"
+            keyboardType="number-pad"
+            textAlign="center"
+            placeholder="Enter you security pin"
+            secureTextEntry={true}
+            maxLength={4}
           />
         </View>
         <View style={styles.button}>
           <Button
-            title="Send Verification Code"
+            title="Login"
             color="#e83b61"
-            onPress={sendVerificationCode}
+            onPress={loginUser}
             disabled={disableButton}
           />
         </View>
+        {/* <TouchableOpacity onPress={navigation.navigate('SendSms')}>
+          <View>
+            <Text>New User? Click here to signup</Text>
+          </View>
+        </TouchableOpacity> */}
         <ActivityIndicator size="large" color="#e83b61" animating={loader} />
       </View>
     </View>
@@ -102,11 +146,11 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 15,
-    borderRadius: 100,
+    borderRadius: 300,
   },
   image: {
     width: '85%',
   },
 });
 
-export default SendSms;
+export default Login;
