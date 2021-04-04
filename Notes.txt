@@ -1,7 +1,7 @@
 1. pass drawer navigation in main and then stack navigation in it 
     https://stackoverflow.com/questions/63169267/expo-app-the-action-toggle-drawer-was-not-handled-by-any-navigator
 
-2. to generate the apk go the the android folder and run the command "./gradlew assembleRelease" and then go to 
+2. to generate the apk go the the android folder and run the command "./gradlew app:assembleRelease" and then go to 
     cd ./android/app/build/outputs/apk/release to find the apk
 
 3. should run while the screen is off
@@ -15,4 +15,7 @@
     and app.json
     https://stackoverflow.com/a/34798296/14080722
 
-6. 
+6. andorid do not allow http requests, so the solution is 
+    https://github.com/facebook/react-native/issues/24408
+    https://github.com/facebook/react-native/issues/24408#issuecomment-490368508
+    
