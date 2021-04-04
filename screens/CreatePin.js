@@ -15,8 +15,8 @@ import {
 } from 'react-native-confirmation-code-field';
 import Constants from '../Constants';
 
-const VerifyCode = ({navigation, route}) => {
-  const {phoneNumber, countryCode} = route.params;
+const CreatePin = ({navigation, route}) => {
+  const {phoneNumber} = route.params;
   const [loader, setLoader] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
 
@@ -27,32 +27,35 @@ const VerifyCode = ({navigation, route}) => {
     setValue,
   });
 
-  const verifyInputCode = async () => {
+  const createUserPin = async () => {
     setLoader(true);
     setDisableButton(true);
-    const url = `${
-      Constants.BACKEND_BASEURL
-    }/verification?phoneNumber=${encodeURIComponent(
-      phoneNumber,
-    )}&countryCode=${encodeURIComponent(countryCode)}&code=${encodeURIComponent(
-      value,
-    )}`;
-    // let response = await fetch(url);
-    // response = await response.json();
-    // const {verified, userId, isCommentator} = response;
-    // if (verified) {
-    //   global.userId = userId;
-    //   global.isCommentator = isCommentator;
-    //   navigation.reset({
-    //     index: 0,
-    //     routes: [{name: 'Drawer'}],
-    //   });
-    // } else {
-    //   Alert.alert('', 'Code is incorrect');
-    // }
-    global.userId = '1';
-    global.isCommentator = false;
-    navigation.navigate('CreatePin', {phoneNumber});
+    const url = `${Constants.BACKEND_BASEURL}/users/signup`;
+    let response = await fetch(url, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        code: value,
+        phoneNumber,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    // console.log(`response is ${JSON.stringify(response, null, 2)}`);
+    if (response.ok) {
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'Drawer',
+          },
+        ],
+      });
+    } else {
+      Alert.alert(
+        'there seems to be some error at this time, please try again latter',
+      );
+    }
     // navigation.reset({
     //   index: 0,
     //   routes: [
@@ -74,8 +77,7 @@ const VerifyCode = ({navigation, route}) => {
         backgroundColor: 'white',
       }}>
       <View>
-        <Text>Enter the verification code we sent to</Text>
-        <Text style={{fontWeight: 'bold'}}>{phoneNumber}</Text>
+        <Text>Create the Pin for your Kommento account</Text>
       </View>
       <View>
         <CodeField
@@ -102,9 +104,9 @@ const VerifyCode = ({navigation, route}) => {
       </View>
       <View style={styles.button}>
         <Button
-          title="Verify Code"
+          title="Create Pin"
           color="#e83b61"
-          onPress={verifyInputCode}
+          onPress={createUserPin}
           disabled={disableButton}
         />
       </View>
@@ -174,4 +176,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VerifyCode;
+export default CreatePin;

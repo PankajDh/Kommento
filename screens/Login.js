@@ -75,7 +75,6 @@ const Login = ({navigation}) => {
       </View>
       <View
         style={{justifyContent: 'center', alignItems: 'center', marginTop: 60}}>
-        {/* <Text>Enter your Phone Number</Text> */}
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TextInput
             onChangeText={setCountryCode}
@@ -115,11 +114,15 @@ const Login = ({navigation}) => {
             disabled={disableButton}
           />
         </View>
-        {/* <TouchableOpacity onPress={navigation.navigate('SendSms')}>
-          <View>
-            <Text>New User? Click here to signup</Text>
-          </View>
-        </TouchableOpacity> */}
+        <TouchableOpacity onPress={() => navigation.navigate('SendSms')}>
+          <Text
+            style={{
+              textDecorationLine: 'underline',
+              color: '#e83b61',
+            }}>
+            New User? Click here to signup
+          </Text>
+        </TouchableOpacity>
         <ActivityIndicator size="large" color="#e83b61" animating={loader} />
       </View>
     </View>
