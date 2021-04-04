@@ -33,7 +33,7 @@ const RecordingModal = ({
   const [mute, setMute] = useState(false);
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
-  const [openMicrophone, setOpenMicrophone] = useState(false);
+  const [openMicrophone, setOpenMicrophone] = useState(true);
 
   const getToken = async (item) => {
     const url = `${Constants.BACKEND_BASEURL}/app-auth/token?channelName=${item.channelName}&userId=${global.userId}`;
