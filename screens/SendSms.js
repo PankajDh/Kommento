@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     // marginLeft: 5,
     // marginRight: 250,
     marginTop: 5,
-    backgroundColor: '#F0F3F4',
+    backgroundColor: 'white',
+    // backgroundColor: '#F0F3F4',
     width: 150,
   },
   main: {
