@@ -17,7 +17,38 @@ const CurrentMatch = ({match}) => {
     teamTwoWickets,
     matchDate,
   } = match;
+  const [scoreTeamOne, setScoreTeamOne] = useState({
+    teamOneRuns,
+    teamOneWickets,
+    teamOneOvers,
+  });
+  const [scoreTeamTwo, setScoreTeamTwo] = useState({
+    teamTwoRuns,
+    teamTwoWickets,
+    teamTwoOvers,
+  });
   const matchDateInJs = new Date(matchDate);
+
+  const getScore = async () => {
+    const url = `${Constants.BACKEND_BASEURL}/matches/${match.id}`;
+    let response = await fetch(url);
+    response = await response.json();
+    const newData = response[0];
+    if (newData) {
+      const {teamOneRuns, teamOneWickets, teamOneOvers} = newData;
+      setScoreTeamOne({teamOneRuns, teamOneWickets, teamOneOvers});
+      const {teamTwoRuns, teamTwoWickets, teamTwoOvers} = newData;
+      setScoreTeamTwo({teamTwoRuns, teamTwoWickets, teamTwoOvers});
+    }
+  };
+
+  useEffect(() => {
+    const startInterval = setInterval(() => {
+      getScore();
+    }, 30000);
+
+    return () => clearInterval(startInterval);
+  });
 
   return (
     <View style={styles.currentMatch}>
@@ -64,10 +95,13 @@ const CurrentMatch = ({match}) => {
           </View>
           <View style={{alignItems: 'center', paddingLeft: 10}}>
             <Text style={{fontWeight: 'bold', fontSize: 15}}>
-              {teamOneRuns ? teamOneRuns : '0'}/
-              {teamOneWickets ? teamOneWickets : '0'}
+              {scoreTeamOne.teamOneRuns ? scoreTeamOne.teamOneRuns : '0'}/
+              {scoreTeamOne.teamOneWickets ? scoreTeamOne.teamOneWickets : '0'}
             </Text>
-            <Text>{teamOneOvers ? teamOneOvers : '0.0'} Overs</Text>
+            <Text>
+              {scoreTeamOne.teamOneOvers ? scoreTeamOne.teamOneOvers : '0.0'}{' '}
+              Overs
+            </Text>
           </View>
         </View>
         <View style={{justifyContent: 'center'}}>
@@ -76,8 +110,8 @@ const CurrentMatch = ({match}) => {
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={{alignItems: 'center', paddingRight: 10}}>
             <Text style={{fontWeight: 'bold', fontSize: 15}}>
-              {teamTwoRuns ? teamTwoRuns : '0'}/
-              {teamTwoWickets ? teamTwoWickets : '0'}
+              {scoreTeamTwo.teamTwoRuns ? scoreTeamTwo.teamTwoRuns : '0'}/
+              {scoreTeamTwo.teamTwoWickets ? scoreTeamTwo.teamTwoWickets : '0'}
             </Text>
             <Text>{teamTwoOvers ? teamTwoOver : '0.0'} Overs</Text>
           </View>

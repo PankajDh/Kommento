@@ -25,6 +25,7 @@ const AudioPlayerModal = ({visible, setSelectedItem, match}) => {
   const onModalClose = () => {
     setSelectedItem({});
     TrackPlayer.stop();
+    TrackPlayer.destroy();
   };
   const [mute, setMute] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
