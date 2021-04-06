@@ -113,7 +113,10 @@ const CurrentMatch = ({match}) => {
               {scoreTeamTwo.teamTwoRuns ? scoreTeamTwo.teamTwoRuns : '0'}/
               {scoreTeamTwo.teamTwoWickets ? scoreTeamTwo.teamTwoWickets : '0'}
             </Text>
-            <Text>{teamTwoOvers ? teamTwoOver : '0.0'} Overs</Text>
+            <Text>
+              {scoreTeamTwo.teamTwoOvers ? scoreTeamTwo.teamTwoOvers : '0.0'}{' '}
+              Overs
+            </Text>
           </View>
           <View style={{alignItems: 'center'}}>
             <Image source={{uri: teamTwo.flagUrl}} style={styles.teamLogo} />

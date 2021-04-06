@@ -11,5 +11,13 @@ let App = () => {
     </NavigationContainer>
   );
 };
+
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_RESUME,
+  minimumBackgroundDuration: 60 * 5,
+  updateDialog: true,
+};
+
 App = codePush(App);
 export default App;
