@@ -45,7 +45,7 @@ const CurrentMatch = ({match}) => {
   useEffect(() => {
     const startInterval = setInterval(() => {
       getScore();
-    }, 30000);
+    }, 15000);
 
     return () => clearInterval(startInterval);
   });
