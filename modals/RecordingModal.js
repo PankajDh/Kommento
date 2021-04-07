@@ -89,7 +89,7 @@ const RecordingModal = ({
     global.engine.addListener('JoinChannelSuccess', (channel, uid, elapsed) => {
       // console.log('JoinChannelSuccess', channel, uid, elapsed);
       setJoinSucceed(true);
-      userJoined(match.id, 'LIVE');
+      userJoined(commentaryDetails.id, 'LIVE');
     });
 
     global.engine.addListener(
@@ -97,7 +97,7 @@ const RecordingModal = ({
       (channel, uid, elapsed) => {
         // console.log('RejoinChannelSuccess', channel, uid, elapsed);
         setJoinSucceed(true);
-        userJoined(match.id, 'LIVE');
+        userJoined(commentaryDetails.id, 'LIVE');
       },
     );
 
@@ -112,7 +112,7 @@ const RecordingModal = ({
     await global.engine.leaveChannel();
     setPeerIds([]);
     setJoinSucceed(false);
-    userJoined(match.id, 'LEFT');
+    userJoined(commentaryDetails.id, 'LEFT');
     // console.log('left channel');
   };
 
@@ -133,9 +133,11 @@ const RecordingModal = ({
   };
 
   const onModalClose = async () => {
-    setSelectedItem({});
     await leaveChannel();
     KeepAwake.deactivate();
+    await global.engine.destroy();
+    global.engine = null;
+    setSelectedItem({});
   };
 
   useEffect(() => {

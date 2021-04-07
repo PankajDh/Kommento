@@ -81,7 +81,7 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     global.engine.addListener('JoinChannelSuccess', (channel, uid, elapsed) => {
       // console.log('JoinChannelSuccess', channel, uid, elapsed);
       setJoinSucceed(true);
-      userJoined(match.id, 'LIVE');
+      userJoined(commentaryDetails.id, 'LIVE');
     });
 
     global.engine.addListener(
@@ -89,7 +89,7 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
       (channel, uid, elapsed) => {
         // console.log('RejoinChannelSuccess', channel, uid, elapsed);
         setJoinSucceed(true);
-        userJoined(match.id, 'LIVE');
+        userJoined(commentaryDetails.id, 'LIVE');
       },
     );
 
@@ -104,7 +104,7 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
     await global.engine.leaveChannel();
     setPeerIds([]);
     setJoinSucceed(false);
-    userJoined(match.id, 'LEFT');
+    userJoined(commentaryDetails.id, 'LEFT');
     // console.log('left channel');
   };
 
@@ -115,12 +115,15 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
   };
 
   const onModalClose = async () => {
-    setSelectedItem({});
     await leaveChannel();
+    await global.engine.destroy();
+    global.engine = null;
+    setSelectedItem({});
   };
 
   useEffect(() => {
     init(commentaryDetails);
+    // return () => (global.engine ? global.engine.destroy() : null);
   }, []);
 
   return (

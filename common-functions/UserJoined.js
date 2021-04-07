@@ -1,10 +1,10 @@
 import Constants from '../Constants';
 
-const userJoined = async (matchId, currentState) => {
-  const url = `${Constants.BACKEND_BASEURL}/users/join/match`;
+const userJoined = async (commentaryId, currentState) => {
+  const url = `${Constants.BACKEND_BASEURL}/users/join/commentary`;
   await fetch(url, {
     body: JSON.stringify({
-      matchId,
+      commentaryId,
       currentState,
       userId: global.userId,
     }),

@@ -107,7 +107,7 @@ const Login = ({navigation}) => {
         </View>
         <View style={styles.button}>
           <Button
-            title="Login"
+            title="Login "
             color="#e83b61"
             onPress={loginUser}
             disabled={disableButton}
