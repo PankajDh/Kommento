@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Constants from '../Constants';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
   const COUNTRY_CODE_LIST = ['+91', '+1'];
@@ -20,11 +21,72 @@ const Login = ({navigation}) => {
   const [loader, setLoader] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
 
+  // const checkPreviousLogin = async () => {
+  //   Alert.alert('', 'calling last login');
+  //   setLoader(true);
+  //   setDisableButton(true);
+  //   let response;
+  //   try {
+  //     response = await AsyncStorage.getItem('loginKommento');
+  //     Alert.alert('', `got this in get ${JSON.stringify(response, null, 2)}`);
+  //   } catch (err) {
+  //     Alert.alert(
+  //       '',
+  //       `not able to get the item ${JSON.stringify(err, null, 2)}`,
+  //     );
+  //   }
+  //   if (!response) {
+  //     setLoader(false);
+  //     setDisableButton(false);
+  //     return;
+  //   }
+  //   const result = JSON.parse(response);
+  //   const hourBetweenLogin =
+  //     (new Date() - new Date(result.timeAdded)) / (3600 * 1000);
+  //   if (hourBetweenLogin > 24) {
+  //     setLoader(false);
+  //     setDisableButton(false);
+  //     return;
+  //   }
+
+  //   const url = `${Constants.BACKEND_BASEURL}/users/${result.userId}`;
+  //   let userResponse = await fetch(url);
+  //   userResponse = await userResponse.json();
+  //   if (
+  //     userResponse.forceLogin ||
+  //     userResponse.isCommentator !== result.isCommentator
+  //   ) {
+  //     setLoader(false);
+  //     setDisableButton(false);
+  //     return;
+  //   }
+  //   global.userId = result.userId;
+  //   global.isCommentator = result.isCommentator;
+
+  //   await fetch(
+  //     `${Constants.BACKEND_BASEURL}/users/login/automatic/${result.userId}`,
+  //     {
+  //       method: 'PATCH',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     },
+  //   );
+
+  //   navigation.reset({
+  //     index: 0,
+  //     routes: [{name: 'Drawer'}],
+  //   });
+
+  //   setLoader(false);
+  //   setDisableButton(false);
+  // };
+
   const loginUser = async () => {
     setLoader(true);
     setDisableButton(true);
-    const url = `${Constants.BACKEND_BASEURL}/users/login`;
     try {
+      const url = `${Constants.BACKEND_BASEURL}/users/login`;
       let response = await fetch(url, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -37,6 +99,7 @@ const Login = ({navigation}) => {
         },
       });
       response = await response.json();
+
       if (response.newUser) {
         Alert.alert(
           '',
@@ -48,6 +111,24 @@ const Login = ({navigation}) => {
         if (verified) {
           global.userId = userId;
           global.isCommentator = isCommentator;
+
+          // try {
+          //   await AsyncStorage.setItem(
+          //     'loginKommento',
+          //     JSON.stringify({...response, timeAdded: new Date()}),
+          //   );
+          // } catch (err) {
+          //   Alert.alert('', `not able to write ${JSON.stringify(err)}`);
+          // }
+
+          const addLoginDetailsUrl = `${Constants.BACKEND_BASEURL}/users/login/automatic/${userId}`;
+          await fetch(addLoginDetailsUrl, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
           navigation.reset({
             index: 0,
             routes: [{name: 'Drawer'}],
@@ -62,6 +143,10 @@ const Login = ({navigation}) => {
     setLoader(false);
     setDisableButton(false);
   };
+
+  // useEffect(() => {
+  //   checkPreviousLogin();
+  // }, []);
 
   return (
     <View style={styles.main}>

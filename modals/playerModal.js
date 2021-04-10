@@ -60,6 +60,8 @@ const PlayerModal = ({visible, setSelectedItem, commentaryDetails, match}) => {
       parseInt(global.userId),
     );
 
+    await engine.setParameters('{"che.audio.opensl":true}');
+
     // Listen for the UserJoined callback.
     // This callback occurs when the remote user successfully joins the channel.
     global.engine.addListener('UserJoined', (uid, elapsed) => {

@@ -61,12 +61,14 @@ const RecordingModal = ({
     // join the channel
     const token = await getToken(item);
 
-    await engine?.joinChannel(
+    await global.engine.joinChannel(
       token,
       item.channelName,
       null,
       parseInt(global.userId),
     );
+    
+    await global.engine.setParameters('{"che.audio.opensl":true}');
 
     // Listen for the UserJoined callback.
     // This callback occurs when the remote user successfully joins the channel.

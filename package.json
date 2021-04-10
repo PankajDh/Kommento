@@ -9,12 +9,14 @@
     "test": "jest",
     "lint": "eslint .",
     "create-apk": "cd android && ./gradlew app:assembleRelease",
+    "gradle-clean": "cd android && ./gradlew clean",
     "release-code-push": "appcenter codepush release-react -a kommentoservice/Kommento -d Production"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-native-fontawesome": "^0.2.6",
+    "@react-native-async-storage/async-storage": "^1.15.2",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/slider": "^3.0.3",
