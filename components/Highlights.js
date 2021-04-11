@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Constants from '../Constants';
 import AudioPlayerModal from '../modals/AudioPlayerModal';
-import CurrentMatch from './CurrentMatch';
 
 const Highlights = () => {
   const [highlights, setHighLights] = useState([]);
@@ -38,15 +37,29 @@ const Highlights = () => {
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => setSelectedItem(item)}>
             <View style={styles.eachGame}>
-              <Image
-                source={require('../assets/ind-vs-eng.jpeg')}
-                style={{
-                  flex: 1,
-                  width: 130,
-                  height: 90,
-                  resizeMode: 'contain',
-                }}
-              />
+              {item.matchLogo ? (
+                <Image
+                  source={{uri: item.matchLogo}}
+                  style={{
+                    flex: 1,
+                    width: 130,
+                    height: 90,
+                    resizeMode: 'contain',
+                  }}
+                />
+              ) : (
+                <View style={{flexDirection: 'row'}}>
+                  <Image
+                    source={{uri: item.teamOne.flagUrl}}
+                    style={styles.teamLogo}
+                  />
+                  <Image
+                    source={{uri: item.teamTwo.flagUrl}}
+                    style={styles.teamLogo}
+                  />
+                </View>
+              )}
+
               <Text style={{fontWeight: 'bold'}}>{item.matchName}</Text>
               {selectedItem.id === item.id ? (
                 <AudioPlayerModal
@@ -76,6 +89,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: Dimensions.get('window').width / 3.3,
     height: 100,
+  },
+  teamLogo: {
+    flex: 1,
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
   },
 });
 export default Highlights;
